@@ -3,19 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Pizza;
 
 class PizzaController extends Controller
 {
     public function index(){
-        $pizza = [
-            ['type'=>'Hawaiian','base'=>'chessy crust','price'=>'$50'],
-            ['type'=>'Volcano','base'=>'garlic crust','price'=>'$40'],
-            ['type'=>'Veg Supreme','base'=>'thin & crispy','price'=>'$20']
-        ];
-        return view('pizza',['pizzas'=>$pizza]);
+        $pizzas = Pizza::get();
+        return view('pizzas.index',['pizzas'=>$pizzas]);
+    }
+
+    public function create(){
+        return view('pizzas.create');
+    }
+
+    public function store(){
+        $pizza = new Pizza();
+
+        $pizza->name = request('name');
+        $pizza->type = request('type');
+        $pizza->base = request('base');
+        $pizza->toppings = request('toppings');
+
+        $pizza->save();
+
+        return redirect('/')->with('mssg',"Thanks for your order");
     }
 
     public function show($id){
-        return view('details',['id'=>$id]);
+        $pizza = Pizza::findorFail($id);
+        return view('pizzas.show',['pizza'=>$pizza]);
+    }
+    
+    public function destroy($id){
+        $pizza =  Pizza::findorFail($id);
+        $pizza->delete();
+
+        return redirect('/pizzas');
     }
 }

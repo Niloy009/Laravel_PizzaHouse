@@ -17,7 +17,8 @@ class CreatePizzasTable extends Migration
             $table->id();
             $table->string('type');
             $table->string('base');
-            $table->decimal('price',8,2);
+            $table->string('name');
+            $table->json('toppings');
             $table->timestamps();
         });
     }
